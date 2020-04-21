@@ -1,0 +1,193 @@
+\documentclass[dvipdfmx,11pt,notheorems]{beamer}
+\usepackage{bxdpx-beamer} %プリアンブル
+\usepackage{pxjahyper}
+\usepackage{minijs}
+\usepackage{graphicx} %画像を挿入する場合
+\renewcommand{\kanjifamilydefault}{\gtdefault} %文体のデフォルトをゴシック体に
+
+\usetheme{Madrid} %このあたりはお好みで
+\usefonttheme{professionalfonts}
+\setbeamertemplate{frametitle}[default][center]
+\setbeamertemplate{navigation symbols}{}
+\setbeamercovered{transparent}
+\setbeamertemplate{footline}[page number]
+\setbeamerfont{footline}{size=\normalsize,series=\bfseries}
+\setbeamercolor{footline}{fg=black,bg=black}
+
+\title{独習git}
+\author{高橋紘海}
+\date{2020.4.23}
+
+\begin{document}
+\begin{frame} %begin{frame}：各スライドの始まりを宣言
+\titlepage %タイトルページのセッティング
+\end{frame} %end{frame}：各スライドの終わりを宣言
+
+\section{gitとは} %section{目次の項目}：目次の内容
+\section{リポジトリ}
+\section{コミット}
+\section{ブランチ}
+\section{gitの特徴}
+\section{コマンドラインでリポジトリを見る}
+\begin{frame}
+\frametitle{内容} %frametitle{タイトル}：スライドのタイトル
+\tableofcontents %目次をセッティング
+\end{frame}
+
+\begin{frame}
+\frametitle{本書で習うこと}
+\begin{itemize} %begin{itemize}：箇条書きを始める前に宣言
+\item 概要 %item ～：ビュレットを冒頭につけることができる
+\item コマンド
+\item リポジトリ
+\item ファイル追跡・更新
+\item コミット
+\item ブランチ
+\item クローン
+\item git log
+\item GitHub
+\end{itemize} %end{itemize}：箇条書き終わり．忘れずに．
+\end{frame}
+
+\begin{frame}
+\frametitle{gitとは}
+\begin{itemize}
+\item 分散型バージョン管理システム
+\item リポジトリ（ファイルやディレクトリの状態が保存されている場所，後述）が開発者各々に与えられる
+\end{itemize}
+$\rightarrow$ リポジトリ全体のコピーを各開発者が所有 %$～$：数式モード，\rightarrow：右矢印（数式モード内でのみ適用）
+\end{frame}
+
+\begin{frame}
+\includegraphics[width=5cm]{pic01.png} %includegraphics[width=大きさ]{画像名}：画像の貼りつけ
+\includegraphics[width=5cm]{pic02.png}\\ %\\：改行
+\begin{center}
+バージョン管理システムがリポジトリを持つ状態(左)と，開発者がリポジトリを持つ状態(右)(画像：https://www.ipl.co.jp/item/git/より)
+\end{center}
+\end{frame}
+
+\begin{frame}
+\frametitle{インストール}
+\begin{itemize}
+\item Unix/Linux\\
+http://git-scm.com/download/linux
+\item Mac\\
+http://git-scm.com/download/mac
+\item Windows\\
+https://gitforwindows.org/
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{リポジトリ}
+\begin{itemize}
+\item ファイルを保存するストレージ領域
+\item バージョン管理では通常1つのディレクトリで実装
+\begin{center}
+\includegraphics[width=5cm]{pic03.png}\\
+手作業のバージョン管理．ファイルに変更を加えるたび，連続番号を与えている．
+\end{center}
+$\rightarrow$後から，ファイル間でどのような変更を加えたのか，わからなくなる\\
+\item 別の作業形態として，ディレクトリ全体のコピーを取る形式もある
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{コミット}
+\begin{itemize}
+\item 保存された変更のこと
+\item　「コミットする」：ファイルに対して行った変更を，元のリポジトリに保存する（書き戻す）こと\\
+かといって，何か書き換えるたびに新しいバージョンを作っていると，際限なくバージョンができてしまう
+\item バージョン：保存する価値のある変更を保存したもの\\
+例）filefixup-03.batを他の人と共有することになった\\
+$\rightarrow$もし渡したバッチファイルが正しく動かなかったら，ひとつ前のバージョンfilefixup.batを提供することができる
+\item バージョンを管理すること，個々のバージョンが何であるかを把握していることが大切
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{ブランチ}
+\begin{itemize}
+\item 開発における経路（あるいは路線）のひとつ
+\item ブランチによって枝分かれした後の変更は，互いに影響を受けることなく進められる
+\begin{center}
+\includegraphics[width=7cm]{pic04.png}\\
+(https://www.atmarkit.co.jp/ait/articles/1305/20/news015.htmlより)
+\end{center}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{gitの主な特徴}
+\begin{itemize}
+\item 分散されたリポジトリ\\
+バージョン管理の操作をローカルに行うことができる\\
+バックアップは他の人のリポジトリ
+\item 素早いブランチ\\
+ディレクトリを変更するのと同じくらい容易・素早くできる\\
+\item ステージングエリア
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{リポジトリを見る}
+\begin{itemize}
+\item \textcolor{blue}{クローニング}：リモートにあるリポジトリをローカルディレクトリにコピーすること\\
+必要なもの：既存リポジトリのURL\\
+例）https://github.com/rickumali/RickUmaliVanityWebsite.gitをクローニング
+\begin{center}
+\includegraphics[width=7cm]{pic07.png}\\
+git cloneの出力\\
+\end{center}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{リポジトリを見る}
+\begin{itemize}
+\item ファイルのリストを見る\\
+\begin{center}
+\includegraphics[width=7cm]{pic08.png}\\
+git ls-filesの出力
+\end{center}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{リポジトリを見る}
+\begin{itemize}
+\item ファイルの詳細を見る
+\begin{center}
+\includegraphics[width=7cm]{pic09.png}\\
+git blameの出力
+\end{center}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{リポジトリを見る}
+\begin{itemize}
+\item コミット履歴を見る
+\begin{center}
+\includegraphics[width=7cm]{pic10.png}\\
+git log --onelineの出力
+\end{center}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{用語}
+\begin{itemize}
+\item ブランチ：リポジトリで行う開発の経路の１つ
+\item チェックアウト：作業のために，ファイルのコピーを要求すること
+\item クローン：リポジトリのコピーを作ること
+\item コミット：リポジトリに保存される変更
+\item 分散型：システムのい性質の１つで，サーバが不要
+\item リポジトリ：ファイルを保存するストレージ領域
+\item ステージエリア：指定した部分だけをコミットできるようにするGitの機能
+\item タイムライン：イベントを時系列に並べたもの
+\item バージョン管理：変更を追跡管理すること
+\end{itemize}
+\end{frame}
+
+\end{document}
