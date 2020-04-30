@@ -1,0 +1,235 @@
+\documentclass[dvipdfmx,11pt,notheorems]{beamer}
+\usepackage{bxdpx-beamer} %プリアンブル
+\usepackage{pxjahyper}
+\usepackage{minijs}
+\usepackage{graphicx} %画像を挿入する場合
+\renewcommand{\kanjifamilydefault}{\gtdefault} %文体のデフォルトをゴシック体に
+
+\usetheme{Madrid} %このあたりはお好みで
+\usefonttheme{professionalfonts}
+\setbeamertemplate{frametitle}[default][center]
+\setbeamertemplate{navigation symbols}{}
+\setbeamercovered{transparent}
+\setbeamertemplate{footline}[page number]
+\setbeamerfont{footline}{size=\normalsize,series=\bfseries}
+\setbeamercolor{footline}{fg=black,bg=black}
+
+\title{正規表現}
+\author{高橋紘海}
+\date{2020.5.7}
+
+\begin{document}
+
+\begin{frame} %begin{frame}：各スライドの始まりを宣言
+\titlepage %タイトルページのセッティング
+\end{frame} %end{frame}：各スライドの終わりを宣言
+
+\begin{frame}
+\frametitle{今日の内容}
+\begin{itemize}
+\item 前回のまとめ
+\item perlの簡単な解説
+\item perlに正規表現を組み込む
+\end{itemize}
+\end{frame} 
+
+
+\begin{frame}
+\frametitle{前回の内容}
+\begin{itemize}
+\item egrep：各ファイルの各行で正規表現のマッチを試し，マッチする部分が見つかった行を表示
+\begin{itemize}
+\item メタ文字
+\item 「\textcolor{blue}{(}」，「\textcolor{blue}{)}」，「\textcolor{blue}{ \^{}}」，「\textcolor{blue}{\textbar}」など
+\end{itemize}
+\item 表記
+\begin{center}
+\includegraphics[width=5cm]{2-1.png}\\
+Fig.1. egrepの起動
+\end{center}
+\item 文字の並びを検索\\
+例）''apple''を検索\\
+$\rightarrow$appleという単語だけでなくpineappleも該当（pine''apple''）
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{メタ文字}
+\begin{itemize}
+\item \^{}（キャレット）：文字列が行頭にあるときのみマッチ\\
+\^{}apple：a$\cdot$ p $\cdot$ p $\cdot$ l $\cdot$ eが行頭にあるとき
+\item \$（ドル記号）：文字列が行の末尾にあるときのみマッチ\\
+apple\$：a$\cdot$ p $\cdot$ p $\cdot$ l $\cdot$ eが行末にあるとき
+\end{itemize}
+\includegraphics[width=4cm]{2-2.png}
+\includegraphics[width=5cm]{2-3.png}
+\begin{center}
+sample1-1.txtの内容とegrepを使った例
+\end{center}
+\end{frame}
+
+\begin{frame}
+\frametitle{文字クラス}
+ [文字１文字２]：文字１または文字２とマッチ\\
+gr[ea]y：grey または grayが表示\\
+\includegraphics[width=4cm]{2-4.png}
+\includegraphics[width=5cm]{2-5.png}
+\begin{center}
+sample1-2.txtの内容と[]を使った例
+\end{center}
+\end{frame}
+
+\begin{frame}
+\frametitle{文字クラス}
+\begin{itemize}
+\item-(ダッシュ）：文字範囲の指定\\
+a-z：aからzまで\\
+\end{itemize}
+\begin{center}
+\includegraphics[width=7cm]{2-6.png}\\
+sample1-2.txtから-を使用した検索の例\\
+\end{center}
+\vspace{\baselineskip}
+\begin{itemize}
+\item 文字クラス内で \^{}を使うと，否定の意味になる
+\begin{center}
+\includegraphics[width=7cm]{2-7.png}\\
+sample1-2.txtから\^{}を使った検索の例
+\end{center}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{その他}
+\begin{itemize}
+\item 選択\\
+\textbar：区切っている表現のいずれかにマッチ
+\item 繰り返し\\
+?：1つは認められるが，オプション\\
+*：任意の数が認められるが，すべてオプション\\
++：最低１つは必須，それ以上はオプション
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\vspace*{\stretch{1}}
+\begin{center}
+復習おわり
+\end{center}
+\vspace{\stretch{1}}
+\end{frame}
+
+
+
+\begin{frame}
+\frametitle{語の重複}
+語の重複を探したい
+\begin{itemize}
+\item チェック対象のファイルはいくつでも受け付ける
+\item 出力の各行にはソースファイルが表示
+\item 行をまたがって処理
+\item 大文字・小文字の違いを無視
+\end{itemize}
+\begin{center}
+\includegraphics[width=3cm]{2-8.png}\\
+今回使うサンプルファイルsample1-3.txt
+\end{center}
+\end{frame}
+
+\begin{frame}
+\frametitle{perlを使った語の検索}
+\begin{center}
+\includegraphics[width=5cm]{2-10.png}\\
+検索用プログラムsample1.pl
+\end{center}
+\vspace{\baselineskip}
+\begin{center}
+\includegraphics[width=5cm]{2-9.png}\\
+実行結果\\
+\end{center}
+$\rightarrow$ほんの数行で問題解決
+\end{frame}
+
+\begin{frame}
+\frametitle{perlを使った語の検索}
+\begin{itemize}
+\item 使われている正規表現
+\begin{itemize}
+\item \textbackslash ([a-z]+)((?:\textbackslash s \textbar $<$ [\^{} $>$]+ $>$)+)(\textbackslash 1 \textbackslash b)
+\item \^{}(?:[\^{}\textbackslash e]*\textbackslash n)+
+\item \^{}
+\end{itemize}
+\item 多くの言語でそっくりそのまま使える
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{perlの簡単な解説}
+サンプルプログラム
+\begin{center}
+\includegraphics[width=5cm]{2-11.png}\\
+摂氏から華氏に変換するプログラム\\
+\vspace{\baselineskip}
+\includegraphics[width=5cm]{2-12.png}\\
+実行結果
+\end{center}
+\begin{itemize}
+\item 単純な変数は先頭がドル記号（数値や任意のテキストを保持）
+\item コメントは\#から行末まで
+\item ダブルクォートの中に変数を書ける
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{perlのサンプルプログラム2}
+\begin{itemize}
+\item 他の言語とよく似た制御構造をサポート
+\begin{center}
+\includegraphics[width=5cm]{2-13.png}\\
+摂氏から華氏に変換するプログラム\\
+\vspace{\baselineskip}
+\includegraphics[width=3cm]{2-14.png}\\
+実行結果\\
+\end{center}
+\item -wオプション：プログラムを注意してチェックし，疑わしいところの警告を表示
+\item -wオプションは必須ではない（やったほうがよい）
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{正規表現をテキストにマッチ}
+\begin{itemize}
+\item \$reply変数に格納されているのが数字だけから構成されているかチェック
+\begin{center}
+\includegraphics[width=3cm]{2-15.png}
+\end{center}
+\item 正規表現$\cdots$\^{}[0-9]+\$
+\item m$\cdots$正規表現マッチを試みる
+\item /$\cdots$正規表現自体を区切る
+\item =$\sim$$\cdots$m/$\cdots$/と検索対象の文字列を結びつける\\
+$\rightarrow$検索の内容が\textcolor{blue}{m/\^{}[0-9]+\$/}，ターゲットが\textcolor{blue}{\$reply}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{プログラムに組み込む}
+\begin{itemize}
+\item sample2.plとsample4.plを組み合わせる
+\begin{center}
+\includegraphics[width=5cm]{2-16.png}\\
+\includegraphics[width=5cm]{2-17.png}\\
+sample5.plと実行結果\\
+\end{center}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{今日のまとめ}
+\begin{itemize}
+\item perlを使った簡単なプログラム
+\item 正規表現をテキストに組み込む
+\item perlに正規表現を組み込む
+\end{itemize}
+\end{frame}
+
+\end{document}
