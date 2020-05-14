@@ -1,0 +1,520 @@
+\documentclass[12pt,aspectratio=169]{beamer}
+\usetheme{default}
+\usecolortheme{dolphin}
+\usefonttheme{structurebold}
+\setbeamertemplate{footline}[frame number]
+
+\title{ShellScript 03}
+\author{@aoirint}
+% \institute{}
+% \author{@aoirint}
+\date{2020/05/14}
+
+\begin{document}
+
+% 01
+\frame{\maketitle}
+
+% 02
+\begin{frame}{テキスト}
+
+  \begin{minipage}{0.58\textwidth}
+    \begin{itemize}
+      \item 新しいシェルプログラミングの教科書
+      \begin{itemize}
+        \item 著・三宅英明
+        \item 刊・SB Creative
+      \end{itemize}
+    \end{itemize}
+  \end{minipage}
+  \hfill
+  \begin{minipage}{0.38\textwidth}
+    \vspace{-4\baselineskip}
+    \begin{center}
+      \includegraphics[width=5cm,bb=0 0 467 596]{../01/images/shellbook.jpg}
+    \end{center}
+  \end{minipage}
+
+  \begin{itemize}
+    \item 書影
+    \begin{itemize}
+      \item { \small \url{https://www.sbcr.jp/product/4797393101/} }
+    \end{itemize}
+  \end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{今回の内容}
+
+  \begin{itemize}
+    \item 第5章 展開とクォーティング
+  \end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{展開とクォーティング}
+
+  \begin{itemize}
+    \item 展開
+    \begin{itemize}
+      \item 特別な記号（メタ文字、*や\{\}など）を他の文字列に置き換える機能
+      \item まとめて処理するファイルを指定する
+      \item 規則的な値を変数に代入する
+      \item 変数に操作を加えてコマンドに渡す
+    \end{itemize}
+
+    \item クォーティング
+    \begin{itemize}
+      \item 展開してほしくないときに抑制する（エスケープする）こと
+    \end{itemize}
+
+  \end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{今回の内容}
+
+  \begin{itemize}
+    \item 第5章 展開とクォーティング
+    \begin{itemize}
+      \item パス名展開（改めて）
+      \item ブレース展開
+      \item チルダ展開
+      \item パラメータ展開（多機能）
+      \item ---ここまで---
+      \begin{scriptsize}
+        \item 算術式評価
+        \item 算術式展開
+        \item プロセス置換
+        \item 履歴展開
+        \item クォーティング
+      \end{scriptsize}
+    \end{itemize}
+
+  \end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{パス名展開 1/4}
+
+  \begin{itemize}
+    \item ワイルドカード展開、ファイル名グロブ
+    \item 条件にマッチするファイル名を並べた文字列として展開する
+    \item 条件はディレクトリの区切りを越えない
+    \item マッチするファイルが1つもない場合、展開されない
+
+  \end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{パス名展開 2/4}
+
+  \begin{itemize}
+    \item 任意の文字（\texttt{ *, ? }）
+      \begin{itemize}
+        \item *.jpg: photo.jpg, image.jpg, ...
+        \item *.txt: document.txt, readme.txt, ...
+        \item file.*: file.bin, file.dat, ...
+        \item *.*: photo.jpg, readme.txt, ...（拡張子のないファイルにはマッチしない）
+        \item iPhone?.txt: iPhoneX.txt, iPhone8.txt, ...
+        \item iPhone*.txt: iPhoneX.txt, iPhone11.txt, iPhoneSE.txt, ...
+      \end{itemize}
+
+  \end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{パス名展開 3/4}
+
+  \begin{itemize}
+    \item いずれか1文字（\texttt{ [], [!], [\^{}] }）
+      \begin{itemize}
+        \item Android[4-8].txt: Android4.txt, Android5.txt, ..., Android8.txt
+        \item Android[!45].txt: ..., Android6.txt, Android7.txt, Android8.txt, ...
+        \item Android[\^{}45].txt: !と同じ
+      \end{itemize}
+
+  \end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{パス名展開 4/4}
+
+  \begin{itemize}
+    \item 条件はディレクトリの区切りを越えない
+      \begin{itemize}
+        \item /usr/bin/*sh: /usr/bin/bash, /usr/bin/fish, /usr/bin/zsh, /usr/bin/ssh, ...
+        \item /usr/*sh: マッチなし（文字列 /usr/*sh）
+        \item /usr/*/*sh: /usr/bin/bash, ..., /usr/lib/openssh, ...
+      \end{itemize}
+
+    \item マッチするファイルが1つもない場合、展開されない
+      \begin{itemize}
+        \item /hogehoge/fuga*piyo: マッチなし（文字列 /hogehoge/fuga*piyo）
+      \end{itemize}
+
+  \end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{ブレース展開 1/3}
+
+  \begin{itemize}
+    \item \{, \}：ブレース brace
+      \begin{itemize}
+        \item\ [, ]：ブラケット bracket
+        \item (, )：パレンセシス parenthesis
+      \end{itemize}
+
+    \item 文字列の一部を複数のパターンに展開する
+      \begin{itemize}
+        \item 連番・組み合わせが簡単に作れる
+      \end{itemize}
+    \item パス名展開と違いファイルの存在とは関係ない
+
+  \end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{ブレース展開 2/3}
+
+  \begin{itemize}
+    \item iPhone \{X,11,SE\}
+      \begin{itemize}
+        \item iPhone X
+        \item iPhone 11
+        \item iPhone SE
+      \end{itemize}
+
+    \item Android \{6..8\}
+      \begin{itemize}
+        \item Android 6
+        \item Android 7
+        \item Android 8
+      \end{itemize}
+
+  \end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{ブレース展開 3/3}
+
+  \begin{itemize}
+    \item PHP \{1..9..2\}（1から9まで2ずつ値が増える）
+      \begin{itemize}
+        \item PHP 1
+        \item PHP 3
+        \item PHP 5
+        \item PHP 7
+        \item PHP 9
+      \end{itemize}
+
+    \item \{A..Z\}\{A..Z\}（組み合わせ）
+      \begin{itemize}
+        \item AA
+        \item AB
+        \item ...
+        \item ZY
+        \item ZZ
+      \end{itemize}
+    \item 日本語はだめそう（\{あ..お\}はbashで動かなかった）
+
+  \end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{チルダ展開}
+
+  \begin{itemize}
+    \item \~{}：チルダ
+    \item ホームディレクトリを表す
+      \begin{itemize}
+        \item ホームディレクトリ：ふつう、/home/USERNAMEのこと
+      \end{itemize}
+    \item \~{}：自分のホームディレクトリ
+      \begin{itemize}
+        \item \~{}/.bashrc：bashの設定ファイル（ログイン時自動実行スクリプト）
+      \end{itemize}
+    \item \~{}someone：ユーザsomeoneのホームディレクトリ
+
+  \end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{パラメータ展開 1/12：基本}
+
+  \begin{itemize}
+    \item パラメータ：変数のこと
+    \item 変数の値に置き換える
+    \item ちょっと値に操作を加えることもできる
+      \begin{itemize}
+        \item できる操作が多いのでこの節は長め
+      \end{itemize}
+  \end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{パラメータ展開 2/12：シンプル}
+
+  \begin{itemize}
+    \item \$VAR：変数VARの値
+    \item \$\{VAR\}：上と同じ
+  \end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{パラメータ展開 3/12：デフォルト値}
+
+  \begin{itemize}
+    \item デフォルト値の指定（:-）
+      \begin{itemize}
+        \item 変数に値が設定されていない（空文字列を含む）ときのデフォルト値を指定する
+        \item \$\{VAR:-myvalue\}
+          \begin{itemize}
+            \item VARに値が設定されているときはVARの値
+            \item 設定されていないときはmyvalue
+            \item 擬似コード：isset(VAR) ? VAR : 'myvalue'
+          \end{itemize}
+      \end{itemize}
+    \item デフォルト値の指定（-）
+      \begin{itemize}
+        \item 変数に値が設定されていない（空文字列を含まない）ときのデフォルト値を指定する
+        \item \$\{VAR-myvalue\}
+      \end{itemize}
+    \item 位置パラメータ（引数を取り出す変数）とよく組み合わせられる
+      \begin{itemize}
+          \item \$\{1:-\$HOME/.conf\}：引数1が渡されていないとき\$HOME/.conf
+      \end{itemize}
+
+  \end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{パラメータ展開 4/12：デフォルト値2}
+
+  \begin{itemize}
+    \item デフォルト値を代入しつつ展開（:=）
+      \begin{itemize}
+        \item 変数に値が設定されていない（空文字列を含む）とき、変数に値を設定しつつ展開する
+        \item \$\{VAR:=myvalue\}
+          \begin{itemize}
+            \item VARに値が設定されているときはVARの値（代入はしない）
+            \item 設定されていないときはVARにmyvalueを代入した上でmyvalue
+          \end{itemize}
+      \end{itemize}
+
+  \end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{パラメータ展開 5/12：値の検証}
+
+  \begin{itemize}
+    \item 値の検証（:?）
+      \begin{itemize}
+        \item 変数に値が設定されていない（空文字列を含む）とき、エラーメッセージを出力し、スクリプトを終了する
+        \item \$\{VAR:?mymessage\}
+          \begin{itemize}
+            \item VARに値が設定されているときはVARの値
+            \item 設定されていないときは標準エラー出力にmymessageを出力し、スクリプトを終了
+          \end{itemize}
+      \end{itemize}
+
+  \end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{パラメータ展開 6/12：値の正規化}
+
+  \begin{itemize}
+    \item 値の正規化（:+）
+      \begin{itemize}
+        \item 変数に値が設定されている（空文字列を含まない）とき、値に置き換える
+        \item 設定されていないときは空文字列に置き換える
+        \item \$\{VAR:+myvalue\}
+          \begin{itemize}
+            \item VARに値が設定されているときはmyvalue
+            \item 設定されていないときは空文字列
+          \end{itemize}
+        \item \$\{VAR+myvalue\}も\$\{VAR-myvalue\}と同様
+        \item 擬似コード：isset(VAR) ? 'myvalue' : ''
+      \end{itemize}
+
+  \end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{パラメータ展開 7/12：文字列の切り出し}
+
+  \begin{itemize}
+    \item 文字列の切り出し（substring）
+      \begin{itemize}
+        \item 文字列の一部を切り出す
+        \item \$\{VAR:start\}, \$\{VAR:start:length\}（start, lengthは数値）
+        \item VAR=abcdef, \$\{VAR:2\}
+          \begin{itemize}
+            \item cdef
+          \end{itemize}
+        \item VAR=abcdef, \$\{VAR: -2\}（要スペース）
+          \begin{itemize}
+            \item ef
+          \end{itemize}
+        \item VAR=abcdef, \$\{VAR:2:2\}
+          \begin{itemize}
+            \item cd
+          \end{itemize}
+        \item VAR=abcdef, \$\{VAR:2:-1\}
+          \begin{itemize}
+            \item cde
+          \end{itemize}
+      \end{itemize}
+
+  \end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{パラメータ展開 8/12：配列の切り出し}
+
+  \begin{itemize}
+    \item 配列：ARRAY=(a b c d e)で設定できる
+    \begin{itemize}
+      \item \$\{ARRAY[@]\}：配列として展開
+        \begin{itemize}
+          \item for elm in "\$\{ARRAY[@]\}"; do echo \$elm; done：出力は要素の個数行
+        \end{itemize}
+      \item \$\{ARRAY[*]\}：文字列として結合してから展開
+        \begin{itemize}
+          \item for elm in "\$\{ARRAY[*]\}"; do echo \$elm; done：出力は1行
+        \end{itemize}
+    \end{itemize}
+
+    \item 配列の切り出し
+      \begin{itemize}
+        \item 配列の一部を切り出す
+        \item \$\{ARRAY[@]:start\}, \$\{ARRAY[@]:start:length\}（start, lengthは数値）
+        \item 文字列と同じ
+      \end{itemize}
+
+  \end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{パラメータ展開 8/12：長さ}
+
+  \begin{itemize}
+    \item 文字列や配列の長さ（数値）に展開
+    \item \$\{\#VAR\}
+    \item \$\{\#ARRAY[@]\}, \$\{\#ARRAY[*]\}（どちらも同じ）
+  \end{itemize}
+
+\end{frame}
+
+
+
+
+\begin{frame}{パラメータ展開 9/12：パターンマッチ 1/2}
+
+  \begin{itemize}
+    \item 変数の値のうちパターン（パス名展開と共通規格）に一致する部分を取り除いて展開
+    \item パターンにマッチする部分がない場合はどこも取り除かれない（そのままの値）
+    \item 最短前方一致：\$\{VAR\#pattern\}
+      \begin{itemize}
+        \item 変数の値, パターン：展開後
+        \item VAR=hoge.tar.gz, \$\{VAR\#hoge\}：.tar.gz
+        \item VAR=hoge.tar.gz, \$\{VAR\#*.\}：tar.gz
+        \item VAR=hoge.tar.gz, \$\{VAR\#XYZ\}：hoge.tar.gz
+      \end{itemize}
+    \item 最長前方一致：\$\{VAR\#\#pattern\}
+      \begin{itemize}
+        \item VAR=hoge.tar.gz, \$\{VAR\#\#*.\}：gz
+      \end{itemize}
+
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}{パラメータ展開 10/12：パターンマッチ 2/2}
+
+  \begin{itemize}
+    \item 最短後方一致：\$\{VAR\%pattern\}
+      \begin{itemize}
+        \item 変数の値, パターン：展開後
+        \item VAR=hoge.tar.gz, \$\{VAR\%.*\}：hoge.tar
+      \end{itemize}
+    \item 最長後方一致：\$\{VAR\%\%pattern\}
+      \begin{itemize}
+        \item VAR=hoge.tar.gz, \$\{VAR\%\%.*\}：hoge
+      \end{itemize}
+
+    \item 例
+      \begin{itemize}
+        \item ファイル名を取り出す（basename）：\$\{VAR\#\#*/\}
+          \begin{itemize}
+            \item /usr/bin/bash：bash
+          \end{itemize}
+        \item 親ディレクトリまでのパスを取り出す（dirname）：\$\{VAR\%/*\}
+          \begin{itemize}
+            \item /usr/bin/bash：/usr/bin
+          \end{itemize}
+
+      \end{itemize}
+
+  \end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{パラメータ展開 11/12：パターン置換}
+
+  \begin{itemize}
+    \item 最初の1つを置換：\$\{VAR/pattern/replacement\}
+      \begin{itemize}
+        \item 変数の値, パターン：展開後
+        \item VAR=hoge.inc.php, \$\{VAR/./\_\}：hoge\_inc.php
+        \item VAR=hoge.inc.php, \$\{VAR/*./fuga.\}：fuga.php
+      \end{itemize}
+    \item すべて置換：\$\{VAR//pattern/replacement\}
+      \begin{itemize}
+        \item VAR=hoge.inc.php, \$\{VAR//./\_\}：hoge\_inc\_php
+      \end{itemize}
+
+  \end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{パラメータ展開 12/12：配列とパターン}
+
+  \begin{itemize}
+    \item 変数部に配列を指定した場合、配列の各要素についてそれぞれ除去、置換される
+    \item ARRAY=(hoge.tar.gz fuga.tar.xz piyo.tar.bz2)
+    \item \$\{ARRAY[@]\%\%.*\}：hoge fuga piyo
+    \item \$\{ARRAY[@]/./\_\}：hoge\_tar.gz fuga\_tar.xz piyo\_tar.bz2
+    \item \$\{ARRAY[@]//./\_\}：hoge\_tar\_gz fuga\_tar\_xz piyo\_tar\_bz2
+
+  \end{itemize}
+
+\end{frame}
+
+
+\end{document}
