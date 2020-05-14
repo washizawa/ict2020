@@ -1,0 +1,183 @@
+\documentclass[dvipdfmx,11pt,notheorems]{beamer}
+\usepackage{bxdpx-beamer} %プリアンブル
+\usepackage{pxjahyper}
+\usepackage{minijs}
+\usepackage{graphicx} %画像を挿入する場合
+\renewcommand{\kanjifamilydefault}{\gtdefault} %文体のデフォルトをゴシック体に
+
+\usetheme{Madrid} %このあたりはお好みで
+\usefonttheme{professionalfonts}
+\setbeamertemplate{frametitle}[default][center]
+\setbeamertemplate{navigation symbols}{}
+\setbeamercovered{transparent}
+\setbeamertemplate{footline}[page number]
+\setbeamerfont{footline}{size=\normalsize,series=\bfseries}
+\setbeamercolor{footline}{fg=black,bg=black}
+
+\title{独習git}
+\author{高橋紘海}
+\date{2020.5.21}
+
+\begin{document}
+\begin{frame} %begin{frame}：各スライドの始まりを宣言
+\titlepage %タイトルページのセッティング
+\end{frame} %end{frame}：各スライドの終わりを宣言
+
+\section{復習}
+\section{リポジトリの作成}
+\section{リポジトリの状態の確認}
+\section{リポジトリにファイルを追加}
+\section{コミット}
+\begin{frame}
+\frametitle{今日の内容}
+\tableofcontents
+\end{frame}
+
+\begin{frame}
+\frametitle{前回の復習}
+\begin{itemize}
+\item 初期設定\\
+\% git config --global user.name ``user name''\\
+\% git config --global user.email ``email@example.com\\
+\item Gitヘルプを使う
+\% git help help：ヘルプシステムのヘルプ\\
+\% git help -a：Gitで利用できる全コマンドのリスト
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{新しいリポジトリを作る}
+\begin{itemize}
+\item git init：新しいGitリポジトリを作る．
+\item どのディレクトリでもタイプできる
+\item 1個のディレクトリが即座にそのディレクトリの中に作られる
+\begin{center}
+\includegraphics[width=10cm]{2-1.png}
+\end{center}
+\item サーバが起動されない
+\item リポジトリが完全にローカル
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Gitリポジトリのポイント}
+\begin{itemize}
+\item \textcolor{blue}{サーバが起動されない}\\
+通常，自分のマシンで実行されているプロセスのすべてをチェックするコマンドを利用可\\
+タスクマネージャーや，ps -eでチェックしても，Gitプロセスは実行されていない
+$\rightarrow$サーバが不要\\
+バージョン管理を始めるディレクトリを簡単に決めることができる．
+\item \textcolor{blue}{リポジトリが完全にローカル}
+\includegraphics[width=5cm]{2-2.png}\\
+ネットワーク上でなく，マシンの作業ディレクトリの中にある\\
+作業ディレクトリ内にいくつかファイルを作成し，それらをリポジトリに追加することができる．
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{リポジトリの状態をチェック}
+\begin{center}
+\includegraphics[width=10cm]{2-3.png}
+\end{center}
+\begin{itemize}
+\item 含まれる情報
+\begin{itemize}
+\item ブランチ名
+\item 現在のコミットを識別するメッセージ（今は無視してよい）
+\item 「コミットするべきものがない」，ファイルの追跡を開始する方法を教えてくれる\\
+$\rightarrow$Gitが追跡できるファイルを1つ作る
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{リポジトリの状態をチェック}
+\begin{center}
+\includegraphics[width=7cm]{2-4.png}
+\end{center}
+\begin{itemize}
+\item 最初のechoコマンドは文字列引数contentsを受け取り，スクリーンにプリントする．これには開業が含まれないので，contentsの直後に次のプロンプトがプリントされる．
+\item 2回目のechoコマンドは同じ文字列引数を受け取り，filefixup.batという名前のファイルにプリントする．
+\item -nスイッチは行末に関する警告メッセージを予防するため
+\item git statusの出力
+\begin{itemize}
+\item ブランチとコミットの識別に関するメッセージは無視
+\item 新しいファイルを検出
+\item 次に何を行うべきか提案
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{ファイルをリポジトリに追加}
+\begin{itemize}
+\item Gitリポジトリに新しくファイルを入れるには，\textcolor{blue}{git add}を使う
+\begin{center}
+\includegraphics[width=7cm]{2-5.png}
+\end{center}
+\item 新しいファイルが存在すること，コミットできることを知らせている
+\begin{center}
+\includegraphics[width=7cm]{2-6.png}
+\end{center}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{コミットする}
+\begin{itemize}
+\item コミットすることでタイムラインが作られる
+\item タイムラインにイベントを作るにはリポジトリにコミットしなければならない
+\item \textcolor{blue}{git commit}を使う
+\begin{center}
+\includegraphics[width=10cm]{2-7.png}
+\end{center}
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{コミットする}
+\begin{center}
+\includegraphics[width=7cm]{2-8.png}
+\end{center}
+\end{frame}
+
+\begin{frame}
+\frametitle{git log，git ls-files}
+\begin{itemize}
+\item 作業ディレクトリの中はクリーンな状態（コミットすべきものがない）
+\item \textcolor{blue}{git log}：リポジトリに行われたすべてのコミットを表示
+\begin{center}
+\includegraphics[width=10cm]{2-9.png}
+\end{center}
+\item Author：設定したユーザとメールアドレス
+\item Date：ローカル時刻
+\item メッセージ：先ほど入力したもの
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{git log, ls-files}
+\begin{itemize}
+\item コミットを構成しているファイルを見るとき：--statスイッチ
+\begin{center}
+\includegraphics[width=10cm]{2-10.png}
+\end{center}
+\item リポジトリに入っているファイルのリスト：ls-filesコマンド
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{ファイルをリポジトリに追加}
+\begin{itemize}
+\item リポジトリにファイルを追加するには3つの段階が必要
+\vspace{\baselineskip}
+\item ファイルの作成
+\item git addによるファイルの追跡
+\item git commit
+\end{itemize}
+\end{frame}
+
+
+
+
+\end{document}
