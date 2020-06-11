@@ -1,0 +1,308 @@
+\documentclass[12pt,aspectratio=169]{beamer}
+\usetheme{default}
+\usecolortheme{dolphin}
+\usefonttheme{structurebold}
+\setbeamertemplate{footline}[frame number]
+
+\title{ShellScript 05}
+\author{@aoirint}
+\date{2020/06/11}
+
+\begin{document}
+
+% 01
+\frame{\maketitle}
+
+% 02
+\begin{frame}{テキスト}
+
+  \begin{minipage}{0.58\textwidth}
+    \begin{itemize}
+      \item 新しいシェルプログラミングの教科書
+      \begin{itemize}
+        \item 著・三宅英明
+        \item 刊・SB Creative
+      \end{itemize}
+    \end{itemize}
+  \end{minipage}
+  \hfill
+  \begin{minipage}{0.38\textwidth}
+    \vspace{-4\baselineskip}
+    \begin{center}
+      \includegraphics[width=5cm,bb=0 0 467 596]{../01/images/shellbook.jpg}
+    \end{center}
+  \end{minipage}
+
+  \begin{itemize}
+    \item 書影
+    \begin{itemize}
+      \item { \small \url{https://www.sbcr.jp/product/4797393101/} }
+    \end{itemize}
+  \end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{今回の内容}
+
+  \begin{itemize}
+    \item 第5章 展開とクォーティング
+    \item 第6章 制御構造
+  \end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{展開とクォーティング}
+
+  \begin{itemize}
+    \item 展開
+    \begin{itemize}
+      \item 特別な記号（メタ文字、*や\{\}など）を他の文字列に置き換える機能
+      \item まとめて処理するファイルを指定する
+      \item 規則的な値を変数に代入する
+      \item 変数に操作を加えてコマンドに渡す
+    \end{itemize}
+
+    \item クォーティング
+    \begin{itemize}
+      \item 展開してほしくないときに抑制する（エスケープする）こと
+    \end{itemize}
+
+  \end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{今回の内容}
+
+  \begin{itemize}
+    \item 第5章 展開とクォーティング
+    \begin{itemize}
+      \begin{scriptsize}
+        \item パス名展開
+        \item ブレース展開
+        \item チルダ展開
+        \item パラメータ展開
+        \item 算術式評価
+        \item 算術式展開
+        \item ---ここから---
+      \end{scriptsize}
+      \item プロセス置換
+      \item 履歴展開
+      \item クォーティング
+    \end{itemize}
+    \item 第6章 制御構造
+      \begin{itemize}
+        \item if
+        \item testコマンド（[、多機能）
+        \item -- 文字列の比較まで
+      \end{itemize}
+
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}{パイプライン（簡単に）}
+
+  \begin{itemize}
+    \item パイプライン
+    \vspace{0.5cm}
+    \item $ \texttt { echo "Hello" > README.md } $
+      \begin{itemize}
+        \item 標準出力の内容をファイルに書き出し
+      \end{itemize}
+    \item $ \texttt { echo "Hello" >> README.md } $
+      \begin{itemize}
+        \item 標準出力の内容をファイルの末尾に追記
+      \end{itemize}
+    \item $ \texttt { tee < README.md } $
+      \begin{itemize}
+        \item ファイルの内容を標準入力に与える
+      \end{itemize}
+
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}{プロセス置換}
+
+  \begin{itemize}
+    \item パイプラインでは同時に2つ以上のファイルを扱うことができない
+    \begin{itemize}
+      \item 例：ファイル1とファイル2の差分を取るコマンド（diffコマンド）
+    \end{itemize}
+    \item 2つ以上のコマンドの出力を同時に扱うときには一時ファイルを作る必要がある
+    \item 展開機能を使って自動的に一時ファイルを用意してくれる
+    \item 1行で完結する
+    \item 一時ファイルが接続する先
+      \begin{itemize}
+        \item コマンドcmdの標準出力 $ \texttt { <(cmd) } $
+        \item コマンドcmdの標準入力 $ \texttt { >(cmd) } $（あまり使われない）
+      \end{itemize}
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}{履歴展開}
+
+  \begin{itemize}
+    \item 対話的にコマンドを実行する場合の機能（シェルスクリプトでは無効）
+    \item コマンドの入力履歴を展開する（\texttt { \textasciitilde/.bash\_history }）
+      \begin{itemize}
+        \item !：prefix
+        \item !!：直前のコマンド
+        \item !n：n個目のコマンド
+        \item !-n：n個前のコマンド
+        \item !string：stringで始まる最後のコマンド
+        \item !?string?：stringを含む最後のコマンド
+        \item \textasciicircum string1\textasciicircum string2\textasciicircum：string1をstring2に置換した最後のコマンド
+        \item !\#：現在のコマンド全体
+      \end{itemize}
+    \item 注意： echo Hello!string
+  \end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{クォーティング}
+
+  \begin{itemize}
+    \item 特別な意味を持つメタ文字を無効化する
+    \item バックスラッシュ \textbackslash string
+      \begin{itemize}
+        \item \textbackslash * ：アスタリスク（*、パス名展開を無効化）
+        \item \textbackslash \$ ：\$（パラメータ展開を無効化）
+        \item \textbackslash\textbackslash ：\textbackslash （クォーティングを無効化）
+      \end{itemize}
+    \item 引用符 'string'（強いクォーティング）
+      \begin{itemize}
+        \item すべてのメタ文字が無効（\textbackslash を含む）
+          \begin{itemize}
+            \item スペースを含むファイル名・文字列
+          \end{itemize}
+      \end{itemize}
+    \item 二重引用符 "string"（弱いクォーティング）
+      \begin{itemize}
+        \item パラメータ展開
+        \item コマンド置換
+        \item 算術式展開
+        \item 履歴展開
+      \end{itemize}
+
+  \end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{/bin/sh, /bin/bash, Bourne Shell}
+
+  \begin{itemize}
+    \item 質問で答えた内容
+    \item 配列はbashにはあるがBourne Shellにはない
+  \end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{制御構造}
+
+  \begin{itemize}
+    \item 制御構造
+      \begin{itemize}
+        \item 条件分岐・繰り返しなど
+        \item 上から順に逐次実行されるプログラムの流れを制御する
+      \end{itemize}
+    \item if
+    \item testコマンド
+    \item \&\&と\textbar\textbar
+  \end{itemize}
+
+\end{frame}
+
+% 条件のところはまだブラックボックス
+\begin{frame}{if 1/2}
+
+  \begin{itemize}
+    \item if 条件; then COMMAND fi
+    \vspace{0.5cm}
+    \item if 条件; then \\ \hspace{0.5cm}COMMAND1 \\ \hspace{0.5cm}COMMAND2 \\ fi
+    \vspace{0.5cm}
+    \item
+      if 条件; then \\
+        \hspace{0.5cm}COMMAND1 \\
+      else \\
+        \hspace{0.5cm}COMMAND2 \\
+      fi
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}{if 2/2}
+
+  \begin{itemize}
+    \item if 条件1; then \\
+      \hspace{0.5cm}COMMAND1 \\
+    elif 条件2; then \\
+      \hspace{0.5cm}COMMAND2 \\
+    else \\
+      \hspace{0.5cm}COMMAND3 \\
+      \hspace{0.5cm}if 条件3; then COMMAND4 fi \\
+    fi
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}{testコマンド（条件式） 1/2}
+
+  \begin{itemize}
+    \item {[ "\$1" = 'yes' ]}
+    \item
+      {if [ "\$1" = 'yes' ]; then \\
+        \hspace{0.5cm}echo YES \\
+      else \\
+        \hspace{0.5cm}echo NO \\
+      fi}
+    \vspace{0.5cm}
+    \item {[ はtestコマンド}
+      \begin{itemize}
+        \item 真ならば終了ステータス0
+        \item 偽ならば終了ステータス1
+      \end{itemize}
+    \item ifなどに使う"条件"には任意のコマンドが使える（コマンドが成功＝終了ステータス0ならば、という条件）
+    % cdコマンド、存在しないファイル $?
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}{testコマンド（条件式） 2/2}
+
+  \begin{itemize}
+    \item ifなどに使う"条件"には任意のコマンドが使える（コマンドが成功＝終了ステータス0ならば、という条件）
+    \item {[、testコマンドもUnixコマンドの1つ}
+      \begin{itemize}
+        \item {[ "\$VAR" = 'hoge' ]}
+        \item {test "\$VAR" = 'hoge'}
+      \end{itemize}
+
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}{testコマンド：文字列の比較}
+
+  \begin{itemize}
+    \item 文字列の比較
+    \item str1 = str2 ：等しい
+    \item str1 == str2 ：等しい
+    \item str1 != str2 ：等しくない
+    \item -n str ：空文字列でない
+    \item -z str ：空文字列である
+    \item $\texttt{str1 < str2}$ ：辞書順でstr1がstr2より前
+    \item $\texttt{str1 > str2}$ ：辞書順でstr1がstr2より後
+  \end{itemize}
+
+\end{frame}
+
+
+\end{document}
