@@ -1,0 +1,427 @@
+\documentclass[12pt,aspectratio=169]{beamer}
+\usetheme{default}
+\usecolortheme{dolphin}
+\usefonttheme{structurebold}
+\setbeamertemplate{footline}[frame number]
+
+\title{ShellScript 06}
+\author{@aoirint}
+\date{2020/07/09}
+
+\begin{document}
+
+% 01
+\frame{\maketitle}
+
+% 02
+\begin{frame}{テキスト}
+
+  \begin{minipage}{0.58\textwidth}
+    \begin{itemize}
+      \item 新しいシェルプログラミングの教科書
+      \begin{itemize}
+        \item 著・三宅英明
+        \item 刊・SB Creative
+      \end{itemize}
+    \end{itemize}
+  \end{minipage}
+  \hfill
+  \begin{minipage}{0.38\textwidth}
+    \vspace{-4\baselineskip}
+    \begin{center}
+      \includegraphics[width=5cm,bb=0 0 467 596]{../01/images/shellbook.jpg}
+    \end{center}
+  \end{minipage}
+
+  \begin{itemize}
+    \item 書影
+    \begin{itemize}
+      \item { \small \url{https://www.sbcr.jp/product/4797393101/} }
+    \end{itemize}
+  \end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{前回の内容}
+
+  \begin{itemize}
+    \item 第5章 展開とクォーティング
+    \item 第6章 制御構造
+    \begin{itemize}
+      \item if
+      \item testコマンド（[、多機能）
+      \item 文字列の比較
+    \end{itemize}
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}{今回の内容}
+
+  \begin{itemize}
+    \item 第6章 制御構造
+    \begin{itemize}
+      \item 整数の比較
+      \item ファイル属性の比較
+      \item if文の注意事項
+      \item \&\&と\textbar\textbar
+      \item \lbrack\lbrack\ \rbrack\rbrack
+      \item for
+      \item case
+      \item while, until
+    \end{itemize}
+
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}{if、testコマンド（条件分岐）}
+
+  \begin{itemize}
+    \item {[ "\$1" = 'yes' ] \# 終了ステータスに結果}
+    \item
+      {if [ "\$1" = 'yes' ]; then \\
+        \hspace{0.5cm}echo YES \\
+      else \\
+        \hspace{0.5cm}echo NO \\
+      fi}
+    \vspace{0.5cm}
+    \item \lbrack はtestコマンド（Unixコマンドの1つ）
+      \begin{itemize}
+        \item 真ならば終了ステータス0
+        \item 偽ならば終了ステータス1
+      \end{itemize}
+    \item ifなどに使う"条件"には任意のコマンドが使える（コマンドが成功＝終了ステータス0ならば、という条件）
+    % cdコマンド、存在しないファイル $?
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{整数の比較}
+
+  \begin{itemize}
+    \item 整数変数の定義
+      \begin{itemize}
+        \item declare -i VAR
+        \item VAR=123
+      \end{itemize}
+
+    \item int1 -eq int2：等しい
+    \item int1 -ne int2 ：等しくない
+    \item int1 -lt int2 ：int1がint2より小さい
+    \item int1 -le int2 ：int1がint2以下
+    \item int1 -gt int2 ：int1がint2より大きい
+    \item int1 -ge int2 ：int1がint2以上
+    \vspace{0.5cm}
+    \item $<$や$>$は文字列用の演算子（辞書順比較）
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}{ファイル属性の比較 1/2}
+
+  \begin{itemize}
+    \item -a file：ファイルが存在する（-eと同じ）
+    \item -e file：ファイルが存在する（-aと同じ）
+    \item -f file：ファイルが存在し、通常のファイルである
+    \item -d file：ファイルが存在し、ディレクトリである
+    \item -h file：ファイルが存在し、シンボリックリンクである
+    \item file1 -nt file2：file1の更新時刻がfile2より新しい
+    \item file1 -ot file2：file1の更新時刻がfile2より古い
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}{ファイル属性の比較 2/2}
+
+  \begin{itemize}
+    \item -G file：ファイルが存在し、グループが現在実行中のシェルのグループ
+    \item -O file：ファイルが存在し、オーナーが現在実行中のシェルのユーザ
+    \item -r file：ファイルが存在し、読み取り権限が与えられている
+    \item -w file：ファイルが存在し、書き込み権限が与えられている
+    \item -x file：ファイルが存在し、実行権限が与えられている
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}{演算子の結合}
+
+  \begin{itemize}
+    \item 条件式1 -a 条件式2：AND
+    \item 条件式1 -o 条件式2：OR
+    \item ! 条件式：NOT
+    \item ()：条件式のグループ化
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}{if文の注意事項：ifと条件部のスペース}
+
+  \begin{itemize}
+    \item ifと条件部、条件部の中身はそれぞれスペースで区切る
+    \item ifと\lbrack はそれぞれ別のコマンド
+    \begin{itemize}
+      \item ifは直後のコマンドを実行、終了ステータスで条件分岐するコマンド
+      \item \lbrack は条件式を評価して終了ステータスで結果を返すコマンド
+    \end{itemize}
+    \item \lbrack の条件部は引数
+    \begin{itemize}
+      \item 最後の引数は\rbrack と決まっている
+    \end{itemize}
+    \item ダメな例
+    \begin{itemize}
+      \item if\lbrack "\$str" = NG\rbrack ; then echo "NG"; fi
+    \end{itemize}
+    \item OKな例
+    \begin{itemize}
+      \item if \lbrack\ "\$str" = OK \rbrack ; then echo "OK"; fi
+      \item ifと\lbrack の間にスペース
+      \item \lbrack の後、\rbrack の前にスペース
+    \end{itemize}
+
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}{if文の注意事項：条件部の後ろ}
+
+  \begin{itemize}
+    \item 条件部の後ろは;で区切る
+    \item ダメな例
+    \begin{itemize}
+      \item if \lbrack "\$str" = NG\rbrack\ then echo "NG"; fi
+    \end{itemize}
+    \item OKな例
+    \begin{itemize}
+      \item if \lbrack "\$str" = OK\rbrack ; then echo "OK"; fi
+      \item \rbrack とthenの間に;
+    \end{itemize}
+
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}{if文の注意事項：記号のクォーティング}
+
+  \begin{itemize}
+    \item \lbrack コマンドの内部でクォーティングが必要
+    \begin{itemize}
+      \item $<$、$>$：リダイレクト
+      \item (、)：サブシェル
+    \end{itemize}
+    \item ダメな例
+    \begin{itemize}
+      \item if \lbrack "\$str1" $<$ "\$str2"\rbrack ; then echo "NG"; fi
+      \item if \lbrack\ ( "\$str1" $<$ "\$str2" ) \rbrack ; then echo "NG"; fi
+    \end{itemize}
+    \item OKな例
+    \begin{itemize}
+      \item if \lbrack "\$str1" \textbackslash$<$ "\$str2"\rbrack ; then echo "OK"; fi
+      \item if \lbrack "\$str1" '$<$' "\$str2"\rbrack ; then echo "OK"; fi
+      \item if \lbrack "\$str1" "$<$" "\$str2"\rbrack ; then echo "OK"; fi
+      \item if \lbrack\ \textbackslash( "\$str1" '$<$' "\$str2" \textbackslash) \rbrack ; then echo "OK"; fi
+    \end{itemize}
+
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}{\&\&と\textbar\textbar}
+
+  \begin{itemize}
+    \item 複数のコマンドをAND、ORで連結して実行する記号
+    \item cmd1 \&\& cmd2：AND
+    \begin{itemize}
+      \item cmd1の終了ステータスが0のときにcmd2を実行する
+    \end{itemize}
+    \item cmd1 \textbar\textbar\ cmd2：OR
+    \begin{itemize}
+      \item cmd1の終了ステータスが0"以外"のときにcmd2を実行する
+    \end{itemize}
+
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}{testコマンドと\&\&と\textbar\textbar}
+
+  \begin{itemize}
+    \item ifに与える条件となるコマンドを複数にできる
+    \item if \lbrack\ -n "\$file" \rbrack\ \&\& \lbrack\ ! -e "\$file" \rbrack; then touch "\$file"; fi
+    \begin{itemize}
+      \item -n：ファイル名が空文字列でない
+      \item !：NOT
+      \item -e：ファイルが存在する
+    \end{itemize}
+
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}{\lbrack\lbrack\ \rbrack\rbrack}
+
+  \begin{itemize}
+    \item 基本的には\lbrack と同じ
+    \item \lbrack と違いコマンドではなくbashの構文
+    \begin{itemize}
+      \item コマンドでは\&\&や\textbar\textbar、$<>$や()を特別扱いできない
+    \end{itemize}
+    \item シンプルに条件式を書ける
+    \item -aや-oの代わりに\&\&や\textbar\textbar を使える
+    \begin{itemize}
+      \item if \lbrack\lbrack\ \$x -gt 3 \&\& \$x -lt 7 \rbrack\rbrack ; then echo "3 $<$ x $<$ 7"; fi
+    \end{itemize}
+    \item 単語分割とパス名展開が行われない
+    \item $<>$や()をクォートする必要がない
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}{\lbrack\lbrack\ \rbrack\rbrack と単語分割}
+
+  \begin{itemize}
+    \item 単語分割
+    \begin{itemize}
+      \item パラメータ展開、コマンド置換、算術式展開を行った後の文字列をスペース、タブ、改行によって複数の単語に区切る機能
+      \item 例）スペースを含む文字列をパラメータ展開
+    \end{itemize}
+    \item str='abc xyz'
+    \item if \lbrack\ \$str = 'abc xyz' \rbrack ; then echo "NG"; fi
+    \begin{itemize}
+      \item if \lbrack\ 'abc' 'xyz' = 'abc xyz' \rbrack ; then echo "NG"; fi
+    \end{itemize}
+    \item クォートによる回避
+    \begin{itemize}
+      \item if \lbrack\ "\$str" = 'abc xyz' \rbrack ; then echo "OK"; fi
+    \end{itemize}
+    \item \lbrack\lbrack\ \rbrack\rbrack による回避
+    \begin{itemize}
+      \item if \lbrack\lbrack\ \$str = 'abc xyz' \rbrack\rbrack ; then echo "OK"; fi
+    \end{itemize}
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}{\lbrack\lbrack\ \rbrack\rbrack とパターンマッチ}
+
+  \begin{itemize}
+    \item パターン文字列
+    \begin{itemize}
+      \item パス名展開に使われる文字列
+      \item 例）*.jpg
+    \end{itemize}
+    \item \lbrack\lbrack\ \rbrack\rbrack の内側では通常パス名展開されない
+    \item パターンマッチ
+    \begin{itemize}
+      \item ==、!=の右辺にパス名展開の記号がある場合（変数の内容の場合を含む）
+      \item str=abc
+      \item pattern=a*
+      \item if \lbrack\lbrack\ \$str == \$pattern \rbrack\rbrack ; then echo "OK"; fi \# aから始まる文字列で真
+      \item if \lbrack\lbrack\ \$str == "\$pattern" \rbrack\rbrack ; then echo "NG"; fi \# a*という文字列で真
+    \end{itemize}
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}{\lbrack\lbrack\ \rbrack\rbrack とパターンマッチ}
+
+  \begin{itemize}
+    \item 拡張正規表現による比較
+    \begin{itemize}
+      \item =~：右辺に拡張正規表現
+      \item str=abc
+      \item pattern=a*
+      \item if \lbrack\lbrack\ \$str =~ \$pattern \rbrack\rbrack ; then echo "OK"; fi \# aから始まる文字列で真
+    \end{itemize}
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}{for}
+
+  \begin{itemize}
+    \item 単語リストに対して繰り返し処理する
+    \item for item in aaa bbb ccc; do echo "\$item"; done
+    \vspace{0.5cm}
+    \item words='aaa bbb ccc'
+    \item for item in \$words; do echo "\$item"; done
+    \vspace{0.5cm}
+    \item for file in *.txt; do echo "\$file"; done
+    \vspace{0.5cm}
+    \item for arg in "\$@"; do echo "\$arg"; done
+    \begin{itemize}
+      \item シェルスクリプトの引数リスト
+    \end{itemize}
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}{for：break,continue}
+
+  \begin{itemize}
+    \item break
+    \begin{itemize}
+      \item 繰り返しの中断
+    \end{itemize}
+    \item continue
+    \begin{itemize}
+      \item 次の繰り返しへ
+    \end{itemize}
+    \item for item in aaa bbb ccc \\ do \\ \hspace{0.5cm} if [[ "\$item" == 'bbb' ]] \\\hspace{0.5cm}  then \\ \hspace{1.0cm} continue \\ \hspace{0.5cm} fi \\ \hspace{0.5cm} echo "\$item" \\ done
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}{case}
+
+  \begin{itemize}
+    \item 1つの文字列に対して複数のパターンを指定
+    \item 最初にマッチしたパターンに対応する処理を実行する
+    \item \textbar ：OR
+    \item case 文字列 in \\
+    \hspace{0.5cm} パターン1) \\
+    \hspace{1.0cm} 処理1 \\
+    \hspace{1.0cm} ;; \\
+    \hspace{0.5cm} パターン2 \textbar パターン3) \\
+    \hspace{1.0cm} 処理2 \\
+    \hspace{1.0cm} ;; \\
+    esac
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}{case}
+
+  \begin{itemize}
+    \item 1つの文字列に対して複数のパターンを指定
+    \item 最初にマッチしたパターンに対応する処理を実行する
+    \item case "\$file" in \\
+    \hspace{0.5cm} *.zip) \\
+    \hspace{1.0cm} unzip "\$file" \\
+    \hspace{1.0cm} ;; \\
+    \hspace{0.5cm} *.tar.gz \textbar\ *.tgz) \\
+    \hspace{1.0cm} tar xzf "\$file" \\
+    \hspace{1.0cm} ;; \\
+    esac
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}{whileとuntil}
+
+  \begin{itemize}
+    \item while 条件コマンド; do 実行コマンド; done\\
+    \begin{itemize}
+      \item 条件コマンドの終了ステータスが0である限り繰り返し
+    \end{itemize}
+    \item until 条件コマンド; do 実行コマンド; done\\
+    \begin{itemize}
+      \item 条件コマンドの終了ステータスが0以外である限り繰り返し
+    \end{itemize}
+    \item \lbrack, \lbrack\lbrack\ \rbrack\rbrack, break, continueも使える
+  \end{itemize}
+
+\end{frame}
+
+
+\end{document}
