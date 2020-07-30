@@ -1,0 +1,550 @@
+\documentclass[12pt,aspectratio=169]{beamer}
+\usetheme{default}
+\usecolortheme{dolphin}
+\usefonttheme{structurebold}
+\setbeamertemplate{footline}[frame number]
+
+\title{Network 07}
+\author{@aoirint}
+% \institute{}
+\date{2020/07/30}
+
+\begin{document}
+
+% 01
+\frame{\maketitle}
+
+% 02
+\begin{frame}{テキスト}
+
+  \begin{minipage}{0.58\textwidth}
+    \begin{itemize}
+      \item ネットワークがよくわかる教科書
+      \begin{itemize}
+        \item 著・福永勇二
+        \item 刊・SB Creative
+      \end{itemize}
+      \item 今回の内容
+        \begin{itemize}
+          \item Chapter 2 Section 16
+          \item Chapter 3 Section 1の途中まで
+        \end{itemize}
+
+    \end{itemize}
+
+  \end{minipage}
+  \hfill
+  \begin{minipage}{0.38\textwidth}
+    \vspace{-1\baselineskip}
+    \begin{figure}[h]
+      \centering
+      \includegraphics[width=4cm,bb=0 0 420 596]{../02/figures/networkbook.jpg}
+      \label{fig:networkbook}
+      \caption{テキスト}
+    \end{figure}
+  \end{minipage}
+
+  \begin{itemize}
+    \item 書影
+    \begin{itemize}
+      \item { \small \url{https://www.sbcr.jp/product/4797393804/} }
+    \end{itemize}
+  \end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{今回の内容}
+
+  \begin{itemize}
+    \item IPv6の概要
+    \item 有線LANの基礎知識
+      \begin{itemize}
+        \item イーサネットの仕様と種類
+      \end{itemize}
+
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}{IPv6：IPv4の状況}
+
+  \begin{itemize}
+    \item IPv4
+    \begin{itemize}
+      \item 32bit（\( 2^{32} \)個）のIPアドレス
+      \item IANAの割り当てるIPアドレスブロックは2011年2月に枯渇 \cite{jpnic:ip枯渇}
+      \item APNIC/JPNICの割り当てるIPアドレスブロックは2011年4月に枯渇 \cite{jpnic:ip枯渇}
+      % APNICとJPNICはIPアドレスの在庫を共有している
+    \end{itemize}
+
+    \centering
+    \begin{figure}
+      \centering
+      \includegraphics[height=4cm,bb=0 0 950 480]{figures/ipv4stat.jpg}
+      \label{fig:ipv4stat}
+      \caption{2017年1月5日の在庫状況（\cite{jpnic:ip枯渇}より引用）}
+    \end{figure}
+
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}{IPv6：IPv4の状況}
+
+  % 固定IPアドレスサービスではない（結構頻繁にIPアドレスが変わる）
+  % 割り当てられるのはIPv4のグローバルアドレス
+  \centering
+  \begin{figure}
+    \centering
+    \includegraphics[height=6cm,bb=0 0 1009 570]{figures/wimaxglobal1.png}
+    \label{fig:wimaxglobal1}
+    \caption{WiMAXの有料オプション（\cite{wimax:napt}より引用）}
+  \end{figure}
+
+\end{frame}
+
+\begin{frame}{IPv6：IPv4の状況}
+
+  \centering
+  \begin{figure}
+    \centering
+    \includegraphics[height=6cm,bb=0 0 934 481]{figures/wimaxglobal2.png}
+    \label{fig:wimaxglobal2}
+    \caption{WiMAXのNAPT（\cite{wimax:napt}より引用）}
+  \end{figure}
+
+\end{frame}
+
+\begin{frame}{IPv6：IPv4の状況}
+
+  \begin{itemize}
+    \item IPv4ネットワークの今後\cite{jpnic:ip枯渇}
+    \begin{itemize}
+      \item 分配済みのIPアドレスを効率的に利用
+      \item NAT/NAPTを利用しグローバルアドレスの分配を受けずに機器を追加
+      \item IPv6へ移行
+    \end{itemize}
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}{IPv6：機器の更新}
+
+  \begin{itemize}
+    \item 既存のIPv4との間に互換性はない % 同時に運用することはできる
+    \item L3以上の機器を交換・更新する必要がある
+    \begin{itemize}
+      \item コンピュータ
+      \item ルータ
+      \item ISPのルータ
+      \item サーバ事業者のサーバ
+    \end{itemize}
+    \item L2以下の機器を取り替える必要はない
+    \begin{itemize}
+      \item LANケーブル
+      \item ハブ・スイッチ
+    \end{itemize}
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}{IPv6：IPv6で通信するには}
+
+  \begin{itemize}
+    \item IPv6で通信するには
+    \begin{itemize}
+      % IPv6が出てきたのは結構前なので、それなりに最近の機器なら対応自体はしていると思われる
+      \item 手元の機器（コンピュータやルータ）の設定
+      \item ISPにIPv6でのインターネットアクセスを申し込む
+    \end{itemize}
+    \item IPv4とIPv6の混在した状況 % で通信する機器
+  \end{itemize}
+
+  \centering
+  \begin{figure}
+    \centering
+    \includegraphics[height=2cm,bb=0 0 186 186]{figures/kamenetqr.png}
+    \label{fig:kamenetqr}
+    \caption{\texttt{ http://www.kame.net/ }}
+  \end{figure}
+
+\end{frame}
+
+\begin{frame}{IPv6：IPv4のパケット構造}
+
+  \centering
+  \begin{figure}
+    \centering
+    \includegraphics[height=6cm,bb=0 0 1404 772]{figures/text_fig2_20.jpg}
+    \label{fig:text_fig2_20}
+    \caption{IPv4のパケット構造（テキストp.55から引用）}
+  \end{figure}
+
+\end{frame}
+
+\begin{frame}{IPv6：IPv6のパケット構造}
+
+  \centering
+  \begin{figure}
+    \centering
+    \includegraphics[height=6cm,bb=0 0 1400 1172]{figures/text_fig2_62.jpg}
+    \label{fig:text_fig2_62}
+    \caption{IPv6のパケット構造（テキストp.98から引用）}
+  \end{figure}
+
+\end{frame}
+
+\begin{frame}{IPv6：IPv6のパケット構造}
+
+  \begin{itemize}
+    \item 基本的なヘッダ
+    \begin{itemize}
+      \item 40バイト（固定長）
+      \item 拡張ヘッダはペイロード扱い
+      \item フィールド数は減った
+    \end{itemize}
+    \item ヘッダチェックサムの削除
+    \begin{itemize}
+      \item 上位プロトコルで検査
+    \end{itemize}
+    \item フラグメント関連は拡張ヘッダへ
+    % ID, フラグメントオフセット
+    \begin{itemize}
+      \item 経路上でのパケット分割の廃止（送信元による分割除く）
+    \end{itemize}
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}{IPv6：IPv6のパケット構造}
+
+  \begin{minipage}{0.48\textwidth}
+    \small
+    \begin{itemize}
+      \item 次ヘッダフィールド
+      \begin{itemize}
+        \item 次のヘッダを指定
+        \item 拡張ヘッダのヘッダ番号
+        \item 上位プロトコルのプロトコル番号
+      \end{itemize}
+    \end{itemize}
+
+  \end{minipage}
+  \hfill
+  \begin{minipage}{0.48\textwidth}
+    \vspace{-1\baselineskip}
+    \centering
+    \begin{figure}
+      \centering
+      \includegraphics[width=7.5cm,bb=0 0 1420 474]{figures/text_tbl2_9.jpg}
+      \label{fig:text_tbl2_9}
+      \caption{IPv6の拡張ヘッダ（テキストp.99から引用）}
+    \end{figure}
+  \end{minipage}
+
+\end{frame}
+
+\begin{frame}{IPv6：IPv6アドレスの表記}
+
+  \begin{itemize}
+    \item 4ケタの16進数を8つ並べる
+    \begin{itemize}
+      \item 2001:0db8:0000:0000:0200:5eff:fe00:5301
+    \end{itemize}
+    \item 簡潔に書くための省略表記
+    \begin{itemize}
+      \item 2001:db8::200:5eff:fe00:5301
+    \end{itemize}
+    \item ::0や::1も有効なアドレス
+    \begin{itemize}
+      \item 0000:0000:0000:0000:0000:0000:0000:0000：未指定アドレス
+      \item 0000:0000:0000:0000:0000:0000:0000:0001：ループバックアドレス
+    \end{itemize}
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}{IPv6：IPv6アドレスの省略表記}
+
+  \centering
+  \begin{figure}
+    \centering
+    \includegraphics[height=6cm,bb=0 0 1262 1292]{figures/text_fig2_63.jpg}
+    \label{fig:text_fig2_63}
+    \caption{IPv6アドレスの省略表記（テキストp.100から引用）}
+  \end{figure}
+
+\end{frame}
+
+\begin{frame}{IPv6：IPv6アドレスの種類と形式}
+
+  \begin{itemize}
+    % ユニキャスト：相手が1つ
+    \item グローバルユニキャストアドレス
+    \begin{itemize}
+      \item インターネット上で唯一
+    \end{itemize}
+    \item リンクローカルユニキャストアドレス
+    \begin{itemize}
+      \item ルータで中継されない
+      \item 特定のイーサネット内でのみ有効
+      \item 機器をネットワークに接続すると自動で割り振られる（DHCP不要）
+    \end{itemize}
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}{IPv6：IPv6アドレスの種類と形式}
+
+  \begin{minipage}{0.48\textwidth}
+    \small
+    \begin{itemize}
+      \item ネットワークプレフィックス：64bit
+      \begin{itemize}
+        \item IPv4のネットワーク部に相当
+        \item ネットワークを表す
+      \end{itemize}
+      \item インタフェースID：64bit
+      \begin{itemize}
+        \item IPv4のホスト部に相当
+        \item 端末や機器を特定する役割
+        \item 固定長で運用（IPv4は可変：クラス）
+      \end{itemize}
+    \end{itemize}
+
+  \end{minipage}
+  \hfill
+  \begin{minipage}{0.48\textwidth}
+    \vspace{-1\baselineskip}
+    \centering
+    \begin{figure}
+      \centering
+      \includegraphics[width=6cm,bb=0 0 1394 968]{figures/text_fig2_64.jpg}
+      \label{fig:text_fig2_64}
+      \caption{IPv6アドレスの種類と形式（テキストp.101から引用）}
+    \end{figure}
+  \end{minipage}
+
+\end{frame}
+
+\begin{frame}{IPv6：ネットワークプレフィクス}
+
+  \begin{minipage}{0.48\textwidth}
+    \small
+    \begin{itemize}
+      \item ネットワークプレフィックス：64bit
+      \begin{itemize}
+        \item ルーティングプレフィックス（48-64bit）
+        \item サブネットID（16-0bit）
+      \end{itemize}
+      \item ルーティングプレフィクス
+      \begin{itemize}
+        \item 割り当てを受けた値を使用
+      \end{itemize}
+      \item サブネットID
+      \begin{itemize}
+        \item サブネットを設けるときに使用
+      \end{itemize}
+    \end{itemize}
+
+  \end{minipage}
+  \hfill
+  \begin{minipage}{0.48\textwidth}
+    \vspace{-1\baselineskip}
+    \centering
+    \begin{figure}
+      \centering
+      \includegraphics[width=6cm,bb=0 0 1394 968]{figures/text_fig2_64.jpg}
+      \label{fig:text_fig2_64}
+      \caption{IPv6アドレスの種類と形式（テキストp.101から引用）}
+    \end{figure}
+  \end{minipage}
+
+\end{frame}
+
+\begin{frame}{IPv6：IPv6アドレスの種類と形式}
+
+  \begin{minipage}{0.48\textwidth}
+    \small
+    \begin{itemize}
+      \item リンクローカルユニキャストアドレスのルーティングプレフィックス
+      \begin{itemize}
+        \item 1111 1110 10 (0が54個)
+        \item fe80:0000:0000:0000
+      \end{itemize}
+      \item IPv6では1つのNICに複数のIPv6アドレスが割り当てられるのが普通
+      \begin{itemize}
+        \item グローバルユニキャストアドレス
+        \item リンクローカルアドレス
+        \item 端末が適切なものを選択して使う
+      \end{itemize}
+    \end{itemize}
+
+  \end{minipage}
+  \hfill
+  \begin{minipage}{0.48\textwidth}
+    \vspace{-1\baselineskip}
+    \centering
+    \begin{figure}
+      \centering
+      \includegraphics[width=6cm,bb=0 0 1394 968]{figures/text_fig2_64.jpg}
+      \label{fig:text_fig2_64}
+      \caption{IPv6アドレスの種類と形式（テキストp.101から引用）}
+    \end{figure}
+  \end{minipage}
+
+\end{frame}
+
+\begin{frame}{IPv6：IPv4の重要な機能との対応}
+
+  \begin{itemize}
+    \item DHCPサーバが不要
+    \begin{itemize}
+      \item IPアドレスの自動割り当てを行うサーバ % 家庭の場合プライベートIPだがルータなどに実装、実際にはグローバルIPの割り当てをするDHCPサーバがあると思われる
+      \item IPv6ではプレフィックスをルータが配信、機器がインタフェースIDを生成してIPv6アドレスを自動生成できる
+      \item DHCPサーバを使うこともできる
+    \end{itemize}
+    \item NAT/NAPTが不要
+    \begin{itemize}
+      \item 内部の機器を隠すため使うこともできる
+      \item プライベートIPアドレス
+      \begin{itemize}
+        \item ユニークローカルユニキャストアドレス
+        \item このアドレスでインターネットと通信はできない
+      \end{itemize}
+    \end{itemize}
+    \item ARP
+    \begin{itemize}
+      \item IPv6のICMPで実装、IPv6用の"ARP"はない
+    \end{itemize}
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}{イーサネット}
+
+  \begin{itemize}
+    \item 有線で接続するネットワークの標準規格
+    \begin{itemize}
+      \item 電気・光信号の形式
+      \item コネクタ形状
+      \item 対向する機器の通信方式など
+    \end{itemize}
+    \item 過去のイーサネット以外の有線ネットワーク規格
+    \begin{itemize}
+      \item トークンリング
+      \item FDDI
+      \item ATMなど
+    \end{itemize}
+    \item 現在はほぼすべてイーサネットに置き換えられた
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}{イーサネット：ネットワークインタフェースカード}
+
+  \begin{itemize}
+    \item ネットワークインタフェースカード（NIC）
+    \item コンピュータやネットワーク機器に組み込まれる通信用コンポーネント
+    \begin{itemize}
+      \item 一般的にはマザーボードに内蔵
+      \item USB NIC（Nintendo Switchなど）
+      \item PCI Expressの拡張ボード（デスクトップPCのNICを増設）など
+      \item 1ポートだけでなく8ポート増設するようなものもある
+      % もっと古いところで行くとゲームキューブのブロードバンドアダプタ、Wiiも有線は増設するNICかな
+    \end{itemize}
+    \item LANケーブルや光ケーブルを接続するポート
+    \begin{itemize}
+      \item 無線LANカード、Bluetoothなど：無線（アンテナ）
+    \end{itemize}
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}{イーサネット：NIC拡張}
+
+  \begin{figure}
+    \centering
+    \includegraphics[height=4cm,bb=0 0 1417 452]{figures/text_fig3_1.jpg}
+    \label{fig:nic}
+    \caption{USB NICとPCI Express NIC（テキストp.107から引用）}
+  \end{figure}
+
+\end{frame}
+
+\begin{frame}{イーサネット：NIC拡張}
+
+  \begin{minipage}{0.48\textwidth}
+    \begin{figure}
+      \centering
+      \includegraphics[width=6cm,bb=0 0 1280 720]{figures/switch_usb_nic.jpg}
+      \label{fig:swnic}
+      \caption{USB NICとNintendo Switch \cite{ninten:sw}}
+    \end{figure}
+  \end{minipage}
+  \hfill
+  \begin{minipage}{0.48\textwidth}
+    \vspace{-1\baselineskip}
+    \centering
+    \begin{figure}
+      \centering
+      \includegraphics[height=6cm,bb=0 0 930 978]{figures/gc_bba_nic.jpg}
+      \label{fig:gcnic}
+      \caption{GCブロードバンドアダプタ \cite{ninten:gc}}
+    \end{figure}
+  \end{minipage}
+
+\end{frame}
+
+\begin{frame}{イーサネット：コネクタ形状}
+
+    \begin{minipage}{0.48\textwidth}
+      \small
+      \begin{itemize}
+        \item RJ-45コネクタ
+        \begin{itemize}
+          \item 一般的なLANケーブル
+          \item 電話用モジュラープラグに似ている
+          \item 8端子
+        \end{itemize}
+        \item TERAコネクタ
+        \begin{itemize}
+          \item データセンター向け\cite{jeitacat8}高カテゴリLANケーブル
+        \end{itemize}
+        \item SCコネクタ：ロックなし
+        \begin{itemize}
+          \item 送受信用の2つのコネクタが連なった形
+        \end{itemize}
+        \item LCコネクタ：小型化、ロック付き
+      \end{itemize}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.48\textwidth}
+      \begin{figure}
+        \centering
+        \includegraphics[width=6cm,bb=0 0 1416 784]{figures/text_fig3_2.jpg}
+        \label{fig:connector}
+        \caption{コネクタ形状（テキストp.107から引用）}
+      \end{figure}
+    \end{minipage}
+
+\end{frame}
+
+
+
+
+\begin{frame}{References}
+
+  \begin{thebibliography}{99}
+    \beamertemplatetextbibitems
+    \bibitem{jpnic:ip枯渇} \texttt{https://www.nic.ad.jp/ja/ip/ipv4pool/}
+    \bibitem{wimax:napt} \texttt{https://www.uqwimax.jp/wimax/plan/option/global\_ip/}
+    \bibitem{ninten:sw} \texttt{https://www.nintendo.co.jp/support/switch/internet/wired.html}
+    \bibitem{ninten:gc} \texttt{https://www.nintendo.co.jp/ngc/acce/gc\_bba.pdf}
+    \bibitem{jeitacat8} \texttt{https://home.jeita.or.jp/upload\_file/20180618105908\_H95U0A2VLc.pdf}
+  \end{thebibliography}
+
+\end{frame}
+
+\end{document}
